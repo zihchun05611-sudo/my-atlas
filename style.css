@@ -35,13 +35,17 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--want); outl
 }
 .brand h1 { margin: 0; font-size: 26px; line-height: 1.1; }
 .brand h1 span { font: 700 20px "Barlow Condensed", sans-serif; color: var(--mute); margin-left: 4px; }
-.brand p { margin: 6px 0 0; font-size: 14px; color: var(--mute); }
-.brand p b { color: var(--ink); }
+.stats { margin: 8px 0 0; font-size: 14px; color: var(--mute); display: flex; flex-wrap: wrap; gap: 2px 12px; }
+.stats b { color: var(--ink); font: 700 18px "Barlow Condensed", sans-serif; }
+.stats .wide { flex-basis: 100%; }
+.brand-actions { display: flex; gap: 8px; margin-top: 10px; }
+.pill { min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.06); font-size: 14px; }
+.pill:hover { background: rgba(255,255,255,0.14); }
 .toggle { display: none; }
 
 /* ===== 左側城市列表 ===== */
 .finder {
-  position: fixed; top: 128px; left: 16px; bottom: 16px; z-index: 5; width: 300px;
+  position: fixed; top: 206px; left: 16px; bottom: 16px; z-index: 5; width: 300px;
   display: flex; flex-direction: column; gap: 10px;
   background: var(--panel); backdrop-filter: blur(10px);
   border: 1px solid var(--line); border-radius: var(--radius); padding: 14px;
@@ -69,7 +73,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--want); outl
 
 /* ===== 右側資訊卡 ===== */
 .card {
-  position: fixed; top: 16px; right: 16px; bottom: 16px; z-index: 6; width: 400px;
+  position: fixed; top: 16px; right: 16px; bottom: 16px; z-index: 6; width: 430px;
   display: flex; flex-direction: column;
   background: var(--panel-solid); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: 0 20px 50px -20px rgba(0,0,0,0.8);
@@ -91,7 +95,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--want); outl
 .status button[aria-pressed="true"] { color: var(--space); font-weight: 700; border-color: transparent; }
 .tabs { display: flex; gap: 2px; padding: 0 12px; border-bottom: 1px solid var(--line); overflow-x: auto; }
 .tab {
-  flex: none; min-height: 44px; padding: 0 12px; border: 0; background: none;
+  flex: none; min-height: 44px; padding: 0 9px; border: 0; background: none;
   color: var(--mute); border-bottom: 3px solid transparent; font-size: 15px;
 }
 .tab[aria-selected="true"] { color: var(--ink); border-color: var(--visited); }
@@ -147,11 +151,63 @@ body.card-open .legend { display: none; }
 @media (max-width: 760px) {
   .brand { top: 10px; left: 10px; right: 10px; width: auto; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
   .brand h1 { font-size: 20px; }
-  .brand p { margin: 0; flex: 1 1 100%; }
-  .toggle { display: block; margin-left: auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; font-size: 14px; }
-  .brand h1 + p { order: 3; }
-  .finder { top: 104px; left: 10px; right: 10px; bottom: auto; max-height: 55vh; width: auto; display: none; }
+  .stats { margin: 0; flex: 1 1 100%; font-size: 13px; }
+  .stats .wide { display: none; }
+  .brand-actions { margin: 0 0 0 auto; }
+  .toggle { display: block; }
+  .finder { top: 120px; left: 10px; right: 10px; bottom: auto; max-height: 55vh; width: auto; display: none; }
   .finder.open { display: flex; }
   .card { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 62vh; border-radius: var(--radius) var(--radius) 0 0; }
   .legend { left: 10px; right: auto; bottom: 10px; }
 }
+
+/* ===== 簡介頁：維基百科與速查 ===== */
+.wiki { margin-bottom: 14px; }
+.wiki.loading .wiki-img { height: 180px; border-radius: 12px; background: linear-gradient(90deg, rgba(255,255,255,.04), rgba(255,255,255,.1), rgba(255,255,255,.04)); background-size: 200% 100%; animation: shimmer 1.2s infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.wiki img { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 10px; }
+.wiki p { margin: 0 0 6px; font-size: 15px; color: #d5ddef; }
+.wiki a { color: var(--want); }
+.wiki .credit { font-size: 12px; color: var(--mute); }
+.lead { font-size: 17px; font-weight: 500; margin: 0 0 6px; }
+.facts { margin: 0; display: grid; gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; }
+.facts div { display: grid; grid-template-columns: 7.5em minmax(0,1fr); gap: 10px; padding: 9px 12px; background: var(--panel-solid); }
+.facts dt { color: var(--mute); font-size: 14px; }
+.facts dd { margin: 0; font-size: 15px; }
+
+/* ===== 我的紀錄 ===== */
+.field { display: grid; gap: 6px; margin-bottom: 16px; }
+.field > span { font-size: 14px; color: var(--mute); }
+.field input[type=date], .field textarea {
+  font: inherit; font-size: 16px; color: var(--ink); background: rgba(255,255,255,0.06);
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; color-scheme: dark;
+}
+.field textarea { resize: vertical; line-height: 1.6; }
+.stars { display: flex; gap: 2px; }
+.star { width: 44px; height: 44px; border: 0; background: none; font-size: 26px; color: rgba(255,255,255,0.25); }
+.star[aria-pressed="true"] { color: var(--lived); }
+.upload { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px dashed var(--want); color: var(--want); cursor: pointer; width: fit-content; }
+.upload input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.upload:focus-within { outline: 3px solid var(--want); outline-offset: 2px; }
+.small { font-size: 13px; color: var(--mute); margin: 0; }
+.hint-box { font-size: 14px; color: var(--lived); background: rgba(255,209,102,0.08); border-radius: 10px; padding: 10px 12px; margin: 0 0 16px; }
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; margin-top: 6px; }
+.gallery figure { margin: 0; position: relative; aspect-ratio: 1; }
+.gallery img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; cursor: zoom-in; display: block; }
+.gallery .del { position: absolute; top: 4px; right: 4px; width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(6,10,20,0.75); font-size: 16px; }
+.gallery.big { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+
+/* ===== 照片庫全頁 ===== */
+.gallery-view { position: fixed; inset: 0; z-index: 20; background: rgba(6,10,20,0.96); overflow-y: auto; padding: 24px max(4vw,16px); }
+.gallery-view[hidden], .lightbox[hidden] { display: none; }
+.gv-head { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto 10px; }
+.gv-head h2 { margin: 0; font-size: 28px; }
+.gv-head .close, .lightbox .close { position: static; }
+.gv-body { max-width: 1100px; margin: 0 auto; }
+.gv-body h3 { display: flex; align-items: baseline; gap: 10px; margin: 24px 0 8px; }
+.gv-body h3 span { font-size: 14px; color: var(--mute); font-weight: 400; }
+.linkish { border: 0; background: none; padding: 0; font-size: 20px; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+.lightbox { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+.lightbox .close { position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.5); }
+@media (prefers-reduced-motion: reduce) { .wiki.loading .wiki-img { animation: none; } }
