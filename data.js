@@ -1,0 +1,233 @@
+// ============================================================
+// 足跡百科 — 城市資料
+// ------------------------------------------------------------
+// 每一座城市是一個 { ... } 區塊，欄位說明：
+//   id          英文代號（不能重複，只用小寫英文和 -）
+//   name        城市名稱 { zh: 中文, en: 英文 }
+//   country     國家／地區名稱 { zh, en }
+//   region      "taiwan" 或 "world"（決定列表分組和點的大小）
+//   lat, lng    緯度、經度（可以在 Google 地圖對地點按右鍵查到）
+//   intro       簡介（一兩句話）
+//   customs     當地習俗（清單）
+//   taboos      禁忌與注意事項（清單）
+//   specialties 名產與特色（清單）
+//   history     歷史 [{ year: "年份", text: "發生什麼事" }]
+//   phrases     當地一句話 [{ local: 原文, pron: 念法, zh: 中文意思 }]
+//   sources     資料來源 [{ title: 名稱, url: 網址 }]
+// 沒有內容的欄位可以先不寫，網站會顯示「還沒有內容」。
+// 新增城市：複製一個 { ... } 區塊，貼在最後一個 }, 後面再修改即可。
+// ============================================================
+
+const CITIES = [
+  // ===================== 台灣 22 縣市 =====================
+  {
+    id: "taipei",
+    name: { zh: "台北市", en: "Taipei" },
+    country: { zh: "台灣", en: "Taiwan" },
+    region: "taiwan", lat: 25.033, lng: 121.565,
+    intro: "台灣的政治與經濟中心，捷運四通八達，夜市、博物館和近郊山景都在城市裡。",
+    customs: [
+      "搭車、買東西都習慣自動排隊。",
+      "夜市是重要的日常生活場景，晚上和朋友去逛夜市很常見。",
+    ],
+    taboos: [
+      "捷運車廂和站內付費區禁止飲食，連喝水、嚼口香糖都不行，違者會被罰款。",
+      "送禮避免送時鐘，「送鐘」和「送終」同音。",
+      "筷子不要直插在飯上，看起來像祭拜用的香。",
+    ],
+    specialties: ["夜市小吃（士林、饒河街）", "牛肉麵", "鳳梨酥", "珍珠奶茶"],
+    history: [
+      { year: "1884", text: "台北府城城牆完工。" },
+      { year: "1895", text: "日治時期開始，台北成為台灣總督府所在地。" },
+      { year: "2004", text: "台北 101 落成，曾是世界最高的大樓。" },
+    ],
+    phrases: [
+      { local: "多謝", pron: "to-siā（台語）", zh: "謝謝" },
+      { local: "你好", pron: "lí-hó（台語）", zh: "你好" },
+      { local: "好食", pron: "hó-tsia̍h（台語）", zh: "好吃" },
+    ],
+    sources: [{ title: "台北旅遊網", url: "https://www.travel.taipei/" }],
+  },
+  { id: "new-taipei", name: { zh: "新北市", en: "New Taipei" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 25.012, lng: 121.465,
+    intro: "環繞台北市的城市，有山城九份、淡水老街和北海岸風景。",
+    specialties: ["九份芋圓", "淡水阿給", "深坑豆腐", "平溪天燈"] },
+  { id: "keelung", name: { zh: "基隆市", en: "Keelung" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 25.128, lng: 121.739,
+    intro: "台灣北部的港口城市，多雨，有「雨港」之稱。",
+    specialties: ["廟口夜市", "鼎邊趖", "海鮮"] },
+  { id: "taoyuan", name: { zh: "桃園市", en: "Taoyuan" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 24.993, lng: 121.301,
+    intro: "台灣的國際門戶，桃園國際機場就在這裡，也有客家文化和大溪老街。",
+    specialties: ["大溪豆干", "客家美食", "石門活魚"] },
+  { id: "hsinchu-city", name: { zh: "新竹市", en: "Hsinchu City" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 24.804, lng: 120.971,
+    intro: "風很大，有「風城」之稱，也是台灣科技產業重鎮。",
+    specialties: ["新竹米粉", "貢丸", "城隍廟小吃"] },
+  { id: "hsinchu-county", name: { zh: "新竹縣", en: "Hsinchu County" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 24.839, lng: 121.004,
+    intro: "客家文化濃厚，北埔老街和內灣老街是熱門景點。",
+    specialties: ["客家擂茶", "柿餅", "內灣野薑花粽"] },
+  { id: "miaoli", name: { zh: "苗栗縣", en: "Miaoli" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 24.560, lng: 120.821,
+    intro: "客家人口比例很高的縣，有山城、木雕和草莓園。",
+    specialties: ["大湖草莓", "三義木雕", "客家小炒"] },
+  { id: "taichung", name: { zh: "台中市", en: "Taichung" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 24.148, lng: 120.674,
+    intro: "氣候宜人的中部大城，有歌劇院、逢甲夜市和高美濕地。",
+    specialties: ["太陽餅", "珍珠奶茶", "逢甲夜市"] },
+  { id: "changhua", name: { zh: "彰化縣", en: "Changhua" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 24.075, lng: 120.544,
+    intro: "有八卦山大佛、鹿港老街和扇形車庫。",
+    specialties: ["彰化肉圓", "鹿港牛舌餅", "爌肉飯"] },
+  { id: "nantou", name: { zh: "南投縣", en: "Nantou" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 23.909, lng: 120.685,
+    intro: "台灣唯一不靠海的縣，有日月潭、清境農場和合歡山。",
+    specialties: ["凍頂烏龍茶", "日月潭紅茶", "埔里紹興酒"] },
+  { id: "yunlin", name: { zh: "雲林縣", en: "Yunlin" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 23.707, lng: 120.543,
+    intro: "重要的農業縣，也是布袋戲的故鄉。",
+    specialties: ["西螺醬油", "古坑咖啡", "布袋戲"] },
+  { id: "chiayi-city", name: { zh: "嘉義市", en: "Chiayi City" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 23.480, lng: 120.449,
+    intro: "前往阿里山的門戶，以雞肉飯聞名。",
+    specialties: ["火雞肉飯", "方塊酥", "文化路夜市"] },
+  { id: "chiayi-county", name: { zh: "嘉義縣", en: "Chiayi County" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 23.459, lng: 120.333,
+    intro: "阿里山就在這裡，有日出、雲海和森林鐵路。",
+    specialties: ["阿里山高山茶", "阿里山咖啡", "布袋港海鮮"] },
+  { id: "tainan", name: { zh: "台南市", en: "Tainan" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 22.999, lng: 120.227,
+    intro: "台灣最古老的城市之一，古蹟和廟宇密集，以小吃聞名。",
+    specialties: ["牛肉湯", "擔仔麵", "虱目魚粥", "棺材板"] },
+  { id: "kaohsiung", name: { zh: "高雄市", en: "Kaohsiung" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 22.627, lng: 120.301,
+    intro: "南台灣的港都，有駁二藝術特區、旗津和愛河。",
+    specialties: ["旗津海鮮", "六合夜市", "木瓜牛奶"] },
+  { id: "pingtung", name: { zh: "屏東縣", en: "Pingtung" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 22.672, lng: 120.488,
+    intro: "台灣最南端，有墾丁國家公園和小琉球。",
+    specialties: ["萬巒豬腳", "東港黑鮪魚", "黑珍珠蓮霧"] },
+  { id: "yilan", name: { zh: "宜蘭縣", en: "Yilan" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 24.757, lng: 121.753,
+    intro: "雪山隧道通車後離台北很近，有溫泉、冷泉和龜山島。",
+    specialties: ["三星蔥", "牛舌餅", "鴨賞"] },
+  { id: "hualien", name: { zh: "花蓮縣", en: "Hualien" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 23.977, lng: 121.604,
+    intro: "有太魯閣峽谷和美麗的海岸線，原住民文化豐富。",
+    specialties: ["花蓮麻糬", "扁食", "剝皮辣椒"] },
+  { id: "taitung", name: { zh: "台東縣", en: "Taitung" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 22.756, lng: 121.144,
+    intro: "步調悠閒，有池上稻田、熱氣球嘉年華和綠島、蘭嶼。",
+    specialties: ["池上米", "釋迦", "原住民料理"] },
+  { id: "penghu", name: { zh: "澎湖縣", en: "Penghu" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 23.566, lng: 119.578,
+    intro: "台灣海峽上的群島，夏天有花火節，冬天東北季風強勁。",
+    specialties: ["黑糖糕", "仙人掌冰", "海鮮"] },
+  { id: "kinmen", name: { zh: "金門縣", en: "Kinmen" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 24.436, lng: 118.318,
+    intro: "靠近中國福建的離島，保留閩南建築和戰地歷史。",
+    specialties: ["金門高粱酒", "貢糖", "菜刀"] },
+  { id: "lienchiang", name: { zh: "連江縣（馬祖）", en: "Matsu" }, country: { zh: "台灣", en: "Taiwan" }, region: "taiwan", lat: 26.160, lng: 119.951,
+    intro: "台灣最北的離島群，有閩東石頭屋，夏天可以看到藍眼淚。",
+    specialties: ["馬祖老酒", "繼光餅", "淡菜"] },
+
+  // ===================== 世界城市 =====================
+  {
+    id: "paris",
+    name: { zh: "巴黎", en: "Paris" },
+    country: { zh: "法國", en: "France" },
+    region: "world", lat: 48.857, lng: 2.352,
+    intro: "法國首都，藝術、時尚與美食之都，塞納河兩岸有許多世界知名的博物館和建築。",
+    customs: [
+      "進商店、搭話之前，先說 Bonjour（晚上說 Bonsoir）。",
+      "熟人見面常行貼臉禮 la bise，次數依地區不同。",
+      "用餐時間長，晚餐常在晚上八點以後。",
+    ],
+    taboos: [
+      "沒打招呼就直接問問題或點餐，會被認為很沒禮貌。",
+      "餐廳帳單通常已含服務費（service compris），小費不是義務，滿意時留一點零錢即可。",
+      "在餐廳和大眾運輸上大聲講話會引人側目。",
+    ],
+    specialties: ["可頌與長棍麵包", "馬卡龍", "起司", "葡萄酒"],
+    history: [
+      { year: "1789", text: "民眾攻佔巴士底監獄，法國大革命爆發。" },
+      { year: "1889", text: "艾菲爾鐵塔為萬國博覽會建成。" },
+      { year: "2024", text: "舉辦夏季奧運。" },
+    ],
+    phrases: [
+      { local: "Bonjour", pron: "bon-jour", zh: "你好（白天）" },
+      { local: "Merci", pron: "mer-si", zh: "謝謝" },
+      { local: "Excusez-moi", pron: "ex-ku-zé-mwa", zh: "不好意思" },
+    ],
+    sources: [{ title: "Paris je t'aime 巴黎官方旅遊網", url: "https://parisjetaime.com/" }],
+  },
+  {
+    id: "irvine",
+    name: { zh: "爾灣", en: "Irvine" },
+    country: { zh: "美國", en: "United States" },
+    region: "world", lat: 33.684, lng: -117.826,
+    intro: "南加州經過完整規劃的城市，治安好、綠地多，加州大學爾灣分校（UC Irvine）就在這裡。",
+    customs: [
+      "見面常用 How are you? 打招呼，對方期待的是簡短回應，不是詳細近況。",
+      "在餐廳用餐通常要給小費，大約是帳單的 15–20%。",
+    ],
+    taboos: [
+      "直接問年齡、收入或體重被認為很失禮。",
+      "排隊時插隊或靠得太近，會讓人不舒服。",
+    ],
+    specialties: ["墨西哥捲餅與塔可", "In-N-Out 漢堡", "附近的 Newport Beach 海灘"],
+    history: [
+      { year: "1864", text: "James Irvine 等人購入土地，後來成為 Irvine Ranch。" },
+      { year: "1965", text: "加州大學爾灣分校開學。" },
+      { year: "1971", text: "爾灣正式設市。" },
+    ],
+    phrases: [
+      { local: "How's it going?", pron: "", zh: "最近好嗎？（輕鬆的打招呼）" },
+      { local: "Can I get the check, please?", pron: "", zh: "可以給我帳單嗎？" },
+    ],
+    sources: [{ title: "City of Irvine", url: "https://www.cityofirvine.org/" }],
+  },
+  {
+    id: "tokyo",
+    name: { zh: "東京", en: "Tokyo" },
+    country: { zh: "日本", en: "Japan" },
+    region: "world", lat: 35.676, lng: 139.650,
+    intro: "日本首都，傳統寺社和超現代都市並存，大眾運輸非常準時。",
+    customs: [
+      "東京搭手扶梯習慣站在左邊（大阪則站右邊）。",
+      "進入住家和部分餐廳要脫鞋。",
+    ],
+    taboos: [
+      "在電車上講電話被認為不禮貌。",
+      "邊走邊吃容易引人側目。",
+      "不需要給小費，給了反而會讓對方困擾。",
+      "不要用筷子傳遞食物給別人，這是喪禮的儀式。",
+    ],
+    specialties: ["壽司", "拉麵", "月島文字燒", "東京香蕉蛋糕"],
+    history: [
+      { year: "1603", text: "德川家康開設江戶幕府，江戶成為政治中心。" },
+      { year: "1868", text: "江戶改名東京，成為日本首都。" },
+      { year: "1964", text: "舉辦亞洲第一次夏季奧運。" },
+    ],
+    phrases: [
+      { local: "こんにちは", pron: "konnichiwa", zh: "你好" },
+      { local: "ありがとう", pron: "arigatō", zh: "謝謝" },
+      { local: "すみません", pron: "sumimasen", zh: "不好意思" },
+    ],
+    sources: [{ title: "GO TOKYO 東京官方旅遊網", url: "https://www.gotokyo.org/" }],
+  },
+  { id: "seoul", name: { zh: "首爾", en: "Seoul" }, country: { zh: "韓國", en: "South Korea" }, region: "world", lat: 37.566, lng: 126.978,
+    intro: "韓國首都，宮殿古蹟、韓流文化和美食都很有名。",
+    taboos: ["和長輩喝酒時，習慣轉頭喝，以表示尊重。"],
+    specialties: ["韓式烤肉", "炸雞配啤酒", "辣炒年糕"] },
+  { id: "bangkok", name: { zh: "曼谷", en: "Bangkok" }, country: { zh: "泰國", en: "Thailand" }, region: "world", lat: 13.756, lng: 100.502,
+    intro: "泰國首都，寺廟金碧輝煌，街頭小吃和夜市熱鬧。",
+    taboos: ["不要摸別人的頭，頭被視為身體最神聖的部位。", "對王室不敬在泰國是違法的。", "進寺廟要穿著得體，不能露肩、穿短褲。"],
+    specialties: ["打拋豬", "泰式奶茶", "芒果糯米飯"] },
+  { id: "singapore", name: { zh: "新加坡", en: "Singapore" }, country: { zh: "新加坡", en: "Singapore" }, region: "world", lat: 1.352, lng: 103.820,
+    intro: "多元文化的城市國家，乾淨有秩序，也是重要的航空樞紐。",
+    taboos: ["當地禁止販售一般口香糖。", "在地鐵上飲食會被罰款。"],
+    specialties: ["海南雞飯", "辣椒螃蟹", "肉骨茶"] },
+  { id: "hong-kong", name: { zh: "香港", en: "Hong Kong" }, country: { zh: "香港", en: "Hong Kong" }, region: "world", lat: 22.319, lng: 114.169,
+    intro: "中西文化交會的國際都市，維多利亞港夜景聞名。",
+    specialties: ["港式飲茶", "菠蘿包", "絲襪奶茶"] },
+  { id: "dubai", name: { zh: "杜拜", en: "Dubai" }, country: { zh: "阿拉伯聯合大公國", en: "United Arab Emirates" }, region: "world", lat: 25.205, lng: 55.271,
+    intro: "沙漠中的現代都市，有世界最高的哈里發塔，也是全球重要的航空轉運站。",
+    taboos: ["齋戒月期間，白天不要在公共場所吃喝。", "公共場所的穿著要保守，避免過於暴露。"],
+    specialties: ["椰棗", "阿拉伯咖啡", "沙漠之旅"] },
+  { id: "london", name: { zh: "倫敦", en: "London" }, country: { zh: "英國", en: "United Kingdom" }, region: "world", lat: 51.507, lng: -0.128,
+    intro: "英國首都，歷史悠久，許多博物館可以免費參觀。",
+    customs: ["搭地鐵手扶梯要站右邊，左邊留給走路的人。"],
+    specialties: ["炸魚薯條", "英式下午茶", "週日烤肉 Sunday roast"] },
+  { id: "rome", name: { zh: "羅馬", en: "Rome" }, country: { zh: "義大利", en: "Italy" }, region: "world", lat: 41.903, lng: 12.496,
+    intro: "義大利首都，被稱為「永恆之城」，到處都是古羅馬遺跡。",
+    taboos: ["進入教堂要遮住肩膀和膝蓋。"],
+    specialties: ["羅馬培根蛋麵 Carbonara", "義式冰淇淋 Gelato", "義式濃縮咖啡"] },
+  { id: "new-york", name: { zh: "紐約", en: "New York" }, country: { zh: "美國", en: "United States" }, region: "world", lat: 40.713, lng: -74.006,
+    intro: "美國最大城市，有自由女神像、時代廣場和中央公園。",
+    specialties: ["紐約披薩", "貝果", "起司蛋糕"] },
+  { id: "sydney", name: { zh: "雪梨", en: "Sydney" }, country: { zh: "澳洲", en: "Australia" }, region: "world", lat: -33.869, lng: 151.209,
+    intro: "澳洲最大城市，以雪梨歌劇院和海灘聞名，季節和台灣相反。",
+    specialties: ["澳式早午餐", "Flat white 咖啡", "邦代海灘"] },
+];

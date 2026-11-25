@@ -1,0 +1,135 @@
+/* ===== 顏色與字體設定（改這裡就能換整個網站的配色） ===== */
+:root {
+  --space: #060a14;
+  --panel: rgba(12, 18, 34, 0.86);
+  --panel-solid: #0f172a;
+  --line: rgba(255, 255, 255, 0.12);
+  --ink: #eef2fb;
+  --mute: #9aa7c2;
+  --visited: #ff5a5f;
+  --lived: #ffd166;
+  --want: #4cc9f0;
+  --none: #ffffff;
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; min-width: 0; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--space);
+  color: var(--ink);
+  font: 16px/1.6 "Noto Sans TC", system-ui, sans-serif;
+  overflow: hidden;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--want); outline-offset: 2px; }
+
+#globe { position: fixed; inset: 0; }
+
+/* ===== 左上標題 ===== */
+.brand {
+  position: fixed; top: 16px; left: 16px; z-index: 5;
+  background: var(--panel); backdrop-filter: blur(10px);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 14px 18px; width: 300px;
+}
+.brand h1 { margin: 0; font-size: 26px; line-height: 1.1; }
+.brand h1 span { font: 700 20px "Barlow Condensed", sans-serif; color: var(--mute); margin-left: 4px; }
+.brand p { margin: 6px 0 0; font-size: 14px; color: var(--mute); }
+.brand p b { color: var(--ink); }
+.toggle { display: none; }
+
+/* ===== 左側城市列表 ===== */
+.finder {
+  position: fixed; top: 128px; left: 16px; bottom: 16px; z-index: 5; width: 300px;
+  display: flex; flex-direction: column; gap: 10px;
+  background: var(--panel); backdrop-filter: blur(10px);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 14px;
+}
+.finder input {
+  width: 100%; min-height: 44px; padding: 0 12px; font-size: 16px;
+  border-radius: 10px; border: 1px solid var(--line);
+  background: rgba(255,255,255,0.06); color: var(--ink);
+}
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  min-height: 36px; padding: 0 12px; border-radius: 999px; font-size: 14px;
+  border: 1px solid var(--line); background: transparent;
+}
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--space); border-color: var(--ink); }
+.list { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1; }
+.list button {
+  width: 100%; min-height: 48px; display: flex; align-items: center; gap: 10px;
+  padding: 6px 8px; border: 0; border-radius: 10px; background: none; text-align: left;
+}
+.list button:hover, .list button[aria-current="true"] { background: rgba(255,255,255,0.08); }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex: none; border: 1px solid rgba(255,255,255,.5); }
+.list .en { color: var(--mute); font: 500 15px "Barlow Condensed", sans-serif; margin-left: auto; }
+.group { font-size: 13px; color: var(--mute); padding: 10px 8px 4px; }
+
+/* ===== 右側資訊卡 ===== */
+.card {
+  position: fixed; top: 16px; right: 16px; bottom: 16px; z-index: 6; width: 400px;
+  display: flex; flex-direction: column;
+  background: var(--panel-solid); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: 0 20px 50px -20px rgba(0,0,0,0.8);
+}
+.card[hidden] { display: none; }
+.card-head { padding: 20px 20px 12px; border-bottom: 1px solid var(--line); position: relative; }
+.card-head .country { font-size: 13px; color: var(--mute); }
+.card-head h2 { margin: 2px 0 0; font-size: 30px; line-height: 1.1; }
+.card-head h2 span { font: 700 22px "Barlow Condensed", sans-serif; color: var(--mute); margin-left: 6px; }
+.close {
+  position: absolute; top: 12px; right: 12px; width: 44px; height: 44px;
+  border-radius: 50%; border: 1px solid var(--line); background: transparent; font-size: 20px;
+}
+.status { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.status button {
+  min-height: 40px; padding: 0 14px; border-radius: 999px; font-size: 14px;
+  border: 1px solid var(--line); background: transparent;
+}
+.status button[aria-pressed="true"] { color: var(--space); font-weight: 700; border-color: transparent; }
+.tabs { display: flex; gap: 2px; padding: 0 12px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tab {
+  flex: none; min-height: 44px; padding: 0 12px; border: 0; background: none;
+  color: var(--mute); border-bottom: 3px solid transparent; font-size: 15px;
+}
+.tab[aria-selected="true"] { color: var(--ink); border-color: var(--visited); }
+.card-body { padding: 18px 20px 24px; overflow-y: auto; flex: 1; }
+.card-body h3 { font-size: 15px; color: var(--mute); margin: 18px 0 6px; font-weight: 500; }
+.card-body h3:first-child { margin-top: 0; }
+.card-body ul { margin: 0; padding-left: 1.2em; }
+.card-body li { margin-bottom: 6px; }
+.timeline li { list-style: none; margin-left: -1.2em; padding-left: 64px; position: relative; }
+.timeline li b { position: absolute; left: 0; font: 700 18px "Barlow Condensed", sans-serif; color: var(--lived); }
+.phrase { display: grid; gap: 2px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.05); margin-bottom: 8px; }
+.phrase .local { font: 700 22px "Barlow Condensed", "Noto Sans TC", sans-serif; }
+.phrase .pron { font-size: 14px; color: var(--want); }
+.empty { color: var(--mute); font-size: 15px; padding: 14px; border: 1px dashed var(--line); border-radius: 12px; }
+.sources { margin-top: 20px; font-size: 13px; color: var(--mute); }
+.sources a { color: var(--want); }
+
+/* ===== 地球上的提示框 ===== */
+.tip { background: rgba(6,10,20,0.9); padding: 4px 10px; border-radius: 8px; font: 14px "Noto Sans TC", sans-serif; color: #fff; }
+.tip span { color: #9aa7c2; margin-left: 4px; }
+
+/* ===== 右下圖例 ===== */
+.legend {
+  position: fixed; right: 16px; bottom: 16px; z-index: 4; display: flex; gap: 12px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 13px;
+}
+.legend span { display: flex; align-items: center; gap: 6px; }
+body.card-open .legend { display: none; }
+
+/* ===== 手機版（寬度 760px 以下） ===== */
+@media (max-width: 760px) {
+  .brand { top: 10px; left: 10px; right: 10px; width: auto; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+  .brand h1 { font-size: 20px; }
+  .brand p { margin: 0; flex: 1 1 100%; }
+  .toggle { display: block; margin-left: auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; font-size: 14px; }
+  .brand h1 + p { order: 3; }
+  .finder { top: 104px; left: 10px; right: 10px; bottom: auto; max-height: 55vh; width: auto; display: none; }
+  .finder.open { display: flex; }
+  .card { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 62vh; border-radius: var(--radius) var(--radius) 0 0; }
+  .legend { left: 10px; right: auto; bottom: 10px; }
+}

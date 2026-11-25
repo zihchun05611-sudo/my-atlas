@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>足跡百科 My Atlas</title>
+  <meta name="description" content="互動式 3D 地球：記錄去過的城市，並查看當地習俗禁忌、名產特色與歷史。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 3D 地球會畫在這裡 -->
+  <div id="globe" aria-label="3D 地球"></div>
+
+  <!-- 左上：標題與統計 -->
+  <header class="brand">
+    <h1>足跡百科 <span>My Atlas</span></h1>
+    <p id="stats">載入中…</p>
+    <button class="toggle" id="finderToggle" aria-expanded="false">城市列表</button>
+  </header>
+
+  <!-- 左側：搜尋與城市列表 -->
+  <aside class="finder" id="finder">
+    <input id="search" type="search" placeholder="搜尋城市（中文或英文）" aria-label="搜尋城市">
+    <div class="filters" id="filters" role="group" aria-label="篩選"></div>
+    <ul class="list" id="list"></ul>
+  </aside>
+
+  <!-- 右側：城市資訊卡 -->
+  <section class="card" id="card" hidden aria-live="polite"></section>
+
+  <!-- 右下：圖例 -->
+  <div class="legend" id="legend"></div>
+
+  <!-- 載入順序：3D 地球工具 → 城市資料 → 主程式 -->
+  <script src="https://cdn.jsdelivr.net/npm/globe.gl@2.46.2/dist/globe.gl.min.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
