@@ -102,6 +102,14 @@ function releaseURLs() { objectURLs.forEach((u) => URL.revokeObjectURL(u)); obje
 
 // ---------- 4. 維基百科：即時抓城市摘要和照片 ----------
 const wikiCache = {};
+// 選一張適合的圖片大小：原圖不大就用原圖；原圖很大才請維基百科縮成 640px
+function pickImage(j) {
+  const orig = j.originalimage, thumb = j.thumbnail;
+  if (!thumb) return "";
+  if (orig && orig.width <= 1200 && !/\.(svg|tiff?)$/i.test(orig.source)) return orig.source;
+  if (orig && orig.width > 640) return thumb.source.replace(/\/\d+px-/, "/640px-");
+  return thumb.source;
+}
 async function getWiki(c) {
   const title = c.wiki || c.name.zh;
   if (title in wikiCache) return wikiCache[title];
@@ -112,7 +120,7 @@ async function getWiki(c) {
     const j = await res.json();
     wikiCache[title] = {
       extract: j.extract || "",
-      img: j.thumbnail ? j.thumbnail.source.replace(/\/\d+px-/, "/640px-") : "",
+      img: pickImage(j),
       url: (j.content_urls && j.content_urls.desktop.page) || `https://zh.wikipedia.org/wiki/${encodeURIComponent(title)}`,
     };
   } catch (e) {
@@ -329,7 +337,7 @@ async function fillWiki(c) {
   const text = w.extract.length > 180 ? w.extract.slice(0, 180) + "…" : w.extract;
   box.classList.remove("loading");
   box.innerHTML = `
-    ${w.img ? `<img src="${esc(w.img)}" alt="${esc(c.name.zh)}" loading="lazy">` : ""}
+    ${w.img ? `<img src="${esc(w.img)}" alt="${esc(c.name.zh)}" loading="lazy" onerror="this.remove()">` : ""}
     <p>${esc(text)} <a href="${esc(w.url)}" target="_blank" rel="noopener">閱讀更多</a></p>
     <p class="credit">文字與圖片來自維基百科（CC BY-SA）</p>`;
 }
