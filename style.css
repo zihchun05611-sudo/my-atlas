@@ -133,6 +133,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--want); outl
 .zoomed .pin.tw span { display: inline; }   /* 放大後才顯示名字 */
 .pin:hover span, .pin.on span { display: inline; background: var(--c); color: var(--space); font-weight: 700; }
 .pin.on i { width: 14px; height: 14px; }
+.pin:focus:not(:focus-visible) { outline: none; }   /* 滑鼠點擊時不顯示外框，用鍵盤操作時才顯示 */
 
 /* ===== 右下圖例 ===== */
 .legend {

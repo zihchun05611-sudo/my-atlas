@@ -60,7 +60,7 @@ const globe = Globe()(globeEl)
   // 轉到地球背面的城市要藏起來
   .htmlElementVisibilityModifier((el, visible) => { el.style.opacity = visible ? 1 : 0; el.style.pointerEvents = visible ? "auto" : "none"; })
   // 放大到台灣附近時，才顯示台灣縣市的名字（避免擠在一起）
-  .onZoom((pov) => document.body.classList.toggle("zoomed", pov.altitude < 0.7))
+  .onZoom((pov) => document.body.classList.toggle("zoomed", pov.altitude < 0.2))
   // 選中城市時的擴散光圈
   .ringsData([])
   .ringLat("lat")
@@ -208,7 +208,7 @@ function selectCity(id) {
   selectedId = id;
   currentTab = "intro";
   globe.controls().autoRotate = false;
-  globe.pointOfView({ lat: c.lat, lng: c.lng, altitude: c.region === "taiwan" ? 0.35 : 0.9 }, 1200);
+  globe.pointOfView({ lat: c.lat, lng: c.lng, altitude: c.region === "taiwan" ? 0.12 : 0.6 }, 1200);
   document.getElementById("finder").classList.remove("open");
   refreshGlobe();
   renderList();
