@@ -21,6 +21,7 @@ function saveMarks() {
 }
 let marks = loadMarks();          // 例如 { "taipei": "lived", "paris": "want" }
 let selectedId = null;            // 目前打開的城市
+const pinEls = {};                // 地球上每座城市的標記
 let currentTab = "intro";         // 資訊卡目前的分頁
 let filter = "all";               // 列表篩選
 let query = "";                   // 搜尋文字
@@ -40,16 +41,26 @@ const globe = Globe()(globeEl)
   .backgroundImageUrl(IMG + "night-sky.png")
   .width(window.innerWidth)
   .height(window.innerHeight)
-  // 城市點
-  .pointsData(CITIES)
-  .pointLat("lat")
-  .pointLng("lng")
-  .pointColor(colorOf)
-  .pointAltitude((d) => (d.id === selectedId ? 0.08 : 0.02))
-  .pointRadius((d) => (d.region === "taiwan" ? 0.09 : 0.35))
-  .pointsMerge(false)
-  .pointLabel((d) => `<div class="tip"><b>${esc(d.name.zh)}</b><span>${esc(d.name.en)}</span></div>`)
-  .onPointClick((d) => selectCity(d.id))
+  // 城市標記：每座城市是一個「圓點＋名字」的小按鈕
+  .htmlElementsData(CITIES)
+  .htmlLat("lat")
+  .htmlLng("lng")
+  .htmlAltitude(0.003)
+  .htmlElement((d) => {
+    const el = document.createElement("button");
+    el.className = "pin" + (d.region === "taiwan" ? " tw" : "");
+    el.dataset.city = d.id;
+    el.title = `${d.name.zh} ${d.name.en}`;
+    el.innerHTML = `<i></i><span>${esc(d.name.zh)}</span>`;
+    el.style.pointerEvents = "auto";
+    pinEls[d.id] = el;
+    paintPin(d);
+    return el;
+  })
+  // 轉到地球背面的城市要藏起來
+  .htmlElementVisibilityModifier((el, visible) => { el.style.opacity = visible ? 1 : 0; el.style.pointerEvents = visible ? "auto" : "none"; })
+  // 放大到台灣附近時，才顯示台灣縣市的名字（避免擠在一起）
+  .onZoom((pov) => document.body.classList.toggle("zoomed", pov.altitude < 0.7))
   // 選中城市時的擴散光圈
   .ringsData([])
   .ringLat("lat")
@@ -69,9 +80,16 @@ window.addEventListener("resize", () => {
   globe.width(window.innerWidth).height(window.innerHeight);
 });
 
-// 足跡改變時，重新畫地球上的點
+// 依照足跡狀態幫標記上色
+function paintPin(c) {
+  const el = pinEls[c.id];
+  if (!el) return;
+  el.style.setProperty("--c", colorOf(c));
+  el.classList.toggle("on", c.id === selectedId);
+}
+// 足跡改變時，重新畫地球上的標記
 function refreshGlobe() {
-  globe.pointsData(CITIES);
+  CITIES.forEach(paintPin);
   const sel = byId(selectedId);
   globe.ringsData(sel ? [sel] : []);
 }
@@ -122,7 +140,11 @@ function renderList() {
         <span class="en">${esc(c.name.en)}</span>
       </button></li>`).join("");
   }
-  document.getElementById("list").innerHTML = html || `<li class="group">找不到符合的城市</li>`;
+  const emptyMsg = query ? "找不到符合的城市，換個關鍵字試試看。"
+    : filter === "been" ? "還沒有標記去過的城市。點開一座城市，按「去過」或「住過」就會出現在這裡。"
+    : filter === "want" ? "還沒有標記想去的城市。點開一座城市，按「想去」就會出現在這裡。"
+    : "找不到符合的城市。";
+  document.getElementById("list").innerHTML = html || `<li class="hint">${emptyMsg}</li>`;
 }
 
 // ---------- 5. 右側資訊卡 ----------

@@ -109,9 +109,30 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--want); outl
 .sources { margin-top: 20px; font-size: 13px; color: var(--mute); }
 .sources a { color: var(--want); }
 
-/* ===== 地球上的提示框 ===== */
-.tip { background: rgba(6,10,20,0.9); padding: 4px 10px; border-radius: 8px; font: 14px "Noto Sans TC", sans-serif; color: #fff; }
-.tip span { color: #9aa7c2; margin-left: 4px; }
+.hint { color: var(--mute); font-size: 14px; padding: 12px 8px; line-height: 1.6; }
+
+/* ===== 地球上的城市標記 ===== */
+.pin {
+  --c: #fff;
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px; border: 0; background: none;
+  transform: translate(-11px, -50%);   /* 讓圓點中心剛好對準城市位置 */
+  transition: opacity .2s;
+}
+.pin i {
+  width: 10px; height: 10px; border-radius: 50%; flex: none;
+  background: var(--c); border: 2px solid rgba(6,10,20,.85);
+  box-shadow: 0 0 0 1px var(--c), 0 0 10px var(--c);
+}
+.pin span {
+  font: 500 13px "Noto Sans TC", sans-serif; color: #fff; white-space: nowrap;
+  background: rgba(6,10,20,.75); padding: 1px 7px; border-radius: 6px;
+}
+.pin.tw i { width: 8px; height: 8px; }
+.pin.tw span { display: none; }              /* 台灣縣市：拉遠時只顯示點 */
+.zoomed .pin.tw span { display: inline; }   /* 放大後才顯示名字 */
+.pin:hover span, .pin.on span { display: inline; background: var(--c); color: var(--space); font-weight: 700; }
+.pin.on i { width: 14px; height: 14px; }
 
 /* ===== 右下圖例 ===== */
 .legend {
